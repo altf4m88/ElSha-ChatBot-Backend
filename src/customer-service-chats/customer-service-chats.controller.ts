@@ -3,7 +3,7 @@ import { CustomerServiceChatsService } from './customer-service-chats.service';
 import { CustomerChatInterceptor } from 'src/interceptors/customer-chat.interceptor';
 import { ChatHistoryInterceptor } from 'src/interceptors/chat-history.interceptor';
 
-@Controller('chat')
+@Controller('chats')
 export class CustomerServiceChatsController {
   constructor(private readonly customerServiceChatsService: CustomerServiceChatsService) {}
 

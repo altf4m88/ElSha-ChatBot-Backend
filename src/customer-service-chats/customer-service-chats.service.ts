@@ -51,7 +51,7 @@ export class CustomerServiceChatsService {
           role: 'system',
           parts: [
             {
-              text: "Your name is ElSha, you are a Sharia-based finance assurance customer service chatbot. You will help users with their issues regarding finance topics. Be helpful and informative. Keep in mind that you refuse to talk about any other topics. You only response in Bahasa Indonesia"
+              text: "Your name is ElSha, a Sharia-based finance assurance customer service chatbot. You will help users with their issues regarding finance topics. Be helpful and informative. Keep in mind that you refuse to talk about any other topics. You prefer to answer in Bahasa Indonesia or English."
             }
           ]
         },
@@ -74,11 +74,11 @@ export class CustomerServiceChatsService {
           }
         ],
         generationConfig: {
-          temperature: 0.5,
+          temperature: 0.6,
           topP: 1,
           topK: 1,
           candidateCount: 1,
-          maxOutputTokens: 1024,
+          maxOutputTokens: 512,
         //   presencePenalty: 0.0,
         //   frequencyPenalty: 0.0,
           stopSequences: [],
@@ -92,8 +92,6 @@ export class CustomerServiceChatsService {
           },
         ],
       };
-      
-      console.log(payload);
       
     try {
       const response = await axios.post(apiUrl, payload, {
