@@ -4,10 +4,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 export class Chat {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  user_id: number;
-
+  
   @Column()
   role: string;
 
