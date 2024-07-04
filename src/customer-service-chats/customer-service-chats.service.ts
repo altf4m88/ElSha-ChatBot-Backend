@@ -21,7 +21,7 @@ export class CustomerServiceChatsService {
 
     const chatHistory = this.chatRepository.find();
 
-    let previousChat = [];
+    const previousChat = [];
     (await chatHistory)
       .sort((a, b) => a.order - b.order)
       .forEach((item) => {

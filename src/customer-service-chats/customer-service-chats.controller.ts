@@ -3,9 +3,7 @@ import {
   Get,
   Post,
   Body,
-  UseGuards,
   UseInterceptors,
-  Request,
   Delete,
 } from '@nestjs/common';
 import { CustomerServiceChatsService } from './customer-service-chats.service';
