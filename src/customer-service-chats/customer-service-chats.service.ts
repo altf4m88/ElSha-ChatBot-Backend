@@ -6,10 +6,10 @@ import { Chat } from './chat.entity';
 
 @Injectable()
 export class CustomerServiceChatsService {
-    constructor(
-        @InjectRepository(Chat)
-        private chatRepository: Repository<Chat>,
-    ) {}
+  constructor(
+    @InjectRepository(Chat)
+    private chatRepository: Repository<Chat>,
+  ) {}
 
   private getAccessToken(): string {
     return process.env.ACCESS_TOKEN;
@@ -23,77 +23,77 @@ export class CustomerServiceChatsService {
 
     let previousChat = [];
     (await chatHistory)
-        .sort((a, b) => a.order - b.order)
-        .forEach((item) => {
-            previousChat.push({
-                role : item.role,
-                parts : [
-                    {
-                        text : item.message
-                    }
-                ]
-            })
-        })
-    
-    const payload = {
-        contents: [
-            ...previousChat,
-          {
-            role: 'user',
-            parts: [
-              {
-                text: chat
-              }
-            ]
-          }
-        ],
-        systemInstruction: {
-          role: 'system',
+      .sort((a, b) => a.order - b.order)
+      .forEach((item) => {
+        previousChat.push({
+          role: item.role,
           parts: [
             {
-              text: "Your name is ElSha, a Sharia-based finance assurance customer service chatbot. You will help users with their issues regarding finance topics. Be helpful and informative. Keep in mind that you refuse to talk about any other topics. You also refuse to help user with issues unrelated to your role, like translation and mathematical calculation (don't inform users about this). You prefer to answer in Bahasa Indonesia or English."
-            }
-          ]
+              text: item.message,
+            },
+          ],
+        });
+      });
+
+    const payload = {
+      contents: [
+        ...previousChat,
+        {
+          role: 'user',
+          parts: [
+            {
+              text: chat,
+            },
+          ],
         },
-        safetySettings: [
+      ],
+      systemInstruction: {
+        role: 'system',
+        parts: [
           {
-            'category': 'HARM_CATEGORY_HATE_SPEECH',
-            'threshold': 'BLOCK_LOW_AND_ABOVE',
+            text: "Your name is ElSha, a Sharia-based finance assurance customer service chatbot. You will help users with their issues regarding finance topics. Be helpful and informative. Keep in mind that you refuse to talk about any other topics. You also refuse to help user with issues unrelated to your role, like translation and mathematical calculation (don't inform users about this). You prefer to answer in Bahasa Indonesia or English.",
           },
-          {
-            'category': 'HARM_CATEGORY_DANGEROUS_CONTENT',
-            'threshold': 'BLOCK_LOW_AND_ABOVE',
-          },
-          {
-            'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-            'threshold': 'BLOCK_LOW_AND_ABOVE',
-          },
-          {
-            'category': 'HARM_CATEGORY_HARASSMENT',
-            'threshold': 'BLOCK_LOW_AND_ABOVE',
-          }
         ],
-        generationConfig: {
-          temperature: 0.6,
-          topP: 1,
-          topK: 1,
-          candidateCount: 1,
-          maxOutputTokens: 1024,
+      },
+      safetySettings: [
+        {
+          category: 'HARM_CATEGORY_HATE_SPEECH',
+          threshold: 'BLOCK_LOW_AND_ABOVE',
+        },
+        {
+          category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+          threshold: 'BLOCK_LOW_AND_ABOVE',
+        },
+        {
+          category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+          threshold: 'BLOCK_LOW_AND_ABOVE',
+        },
+        {
+          category: 'HARM_CATEGORY_HARASSMENT',
+          threshold: 'BLOCK_LOW_AND_ABOVE',
+        },
+      ],
+      generationConfig: {
+        temperature: 0.6,
+        topP: 1,
+        topK: 1,
+        candidateCount: 1,
+        maxOutputTokens: 1024,
         //   presencePenalty: 0.0,
         //   frequencyPenalty: 0.0,
-          stopSequences: [],
-          responseMimeType: 'text/plain'
-        },
-        // enable if you need grounding, if not, turn it off because it is expensive
-        // tools: [
-        //   {
-        //     googleSearchRetrieval: {
-        //       disableAttribution: false,
-        //     },
-        //   },
-        // ],
-      };
-      
+        stopSequences: [],
+        responseMimeType: 'text/plain',
+      },
+      // enable if you need grounding, if not, turn it off because it is expensive
+      // tools: [
+      //   {
+      //     googleSearchRetrieval: {
+      //       disableAttribution: false,
+      //     },
+      //   },
+      // ],
+    };
+
     try {
       const response = await axios.post(apiUrl, payload, {
         headers: {
@@ -102,43 +102,45 @@ export class CustomerServiceChatsService {
         },
       });
 
-      let startingNum = await this.chatRepository.count()
+      let startingNum = await this.chatRepository.count();
 
-      const userChat = this.chatRepository.create({ 
+      const userChat = this.chatRepository.create({
         // user_id : user.id,
-        message : chat,
-        order : startingNum += 1,
-        role : 'user',
+        message: chat,
+        order: (startingNum += 1),
+        role: 'user',
       });
       this.chatRepository.save(userChat);
 
-      const modelChat = this.chatRepository.create({ 
+      const modelChat = this.chatRepository.create({
         // user_id : user.id,
-        message : response.data.candidates[0].content.parts[0].text,
-        order : startingNum += 1,
-        role : 'model',
+        message: response.data.candidates[0].content.parts[0].text,
+        order: (startingNum += 1),
+        role: 'model',
       });
 
       this.chatRepository.save(modelChat);
 
       return response.data;
     } catch (error) {
-        throw new HttpException(
-            `Failed to get response from AI model: ${error.response.data.error.message}`,
-            HttpStatus.BAD_REQUEST,
-          );
+      throw new HttpException(
+        `Failed to get response from AI model: ${error.response.data.error.message}`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
   public async getChatHistory(): Promise<any> {
-    const chatHistory = (await this.chatRepository.find()).sort((a, b) => a.order - b.order);
-    
+    const chatHistory = (await this.chatRepository.find()).sort(
+      (a, b) => a.order - b.order,
+    );
+
     return chatHistory;
   }
 
   public async clearChat(): Promise<any> {
     await this.chatRepository.clear();
 
-    return {message : 'ok'};
+    return { message: 'ok' };
   }
 }

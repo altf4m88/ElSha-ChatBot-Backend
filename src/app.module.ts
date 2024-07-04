@@ -12,10 +12,12 @@ import { CustomerServiceChatsModule } from './customer-service-chats/customer-se
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    ThrottlerModule.forRoot([{
-      ttl: 60000,
-      limit: 10,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
     CustomerServiceChatsModule,
   ],
   providers: [

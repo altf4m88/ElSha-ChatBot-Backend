@@ -9,7 +9,9 @@ describe('CustomerServiceChatsController', () => {
       controllers: [CustomerServiceChatsController],
     }).compile();
 
-    controller = module.get<CustomerServiceChatsController>(CustomerServiceChatsController);
+    controller = module.get<CustomerServiceChatsController>(
+      CustomerServiceChatsController,
+    );
   });
 
   it('should be defined', () => {

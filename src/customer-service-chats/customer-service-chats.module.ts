@@ -7,7 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [TypeOrmModule.forFeature([Chat])],
   controllers: [CustomerServiceChatsController],
-  providers: [CustomerServiceChatsService]
-
+  providers: [CustomerServiceChatsService],
 })
 export class CustomerServiceChatsModule {}
